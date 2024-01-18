@@ -6,7 +6,7 @@ const app = express()
 app.use(cors())
 
 app.get("/node/", (req, res) => {
-    return res.json({ message: "ceci est message de node js for black kube" })
+    return res.json({ message: "Projet avec AHO_NCHO_YAO" })
 })
 
 app.listen(process.env.PORT, () => {
