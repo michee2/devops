@@ -1,0 +1,26 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - trigger
+
+build:
+    tags:
+      - local
+    stage: build
+    image: docker:dind
+    variables:
+      image_name: $CI_REGISTRY_IMAGE
+    before_script:
+        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    script:
+        - docker build -t $image_name .
+        - docker push $image_name 
+    
+    only:
+        - main 
+
+trigger:
+  stage: trigger
+  tags:
+    - local
+  script:
+    - "curl -X POST --fail -F token=$CI_TOKEN -F ref=main -F 'variables[DEMO]=black' https://gitlab.com/api/v4/projects/43574929/trigger/pipeline"
