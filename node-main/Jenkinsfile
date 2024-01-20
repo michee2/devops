@@ -4,7 +4,17 @@ pipeline {
     stages {
         stage(build){
             steps {
-                echo "Build ok"
+                sh "docker build -t app_node -f 'docker/Dockerfile'"
+            }
+        }
+
+        stage("push to registy"){
+            steps {
+                withCredentials([usernamePassword(credentialsId:'gitlab',usernameVariable:'username',passwordVariable:'password')]){
+                    sh "docker login -u $username -p $password registry.gitlab.com"
+                }
+                sh "docker tag app_node registry.gitlab.com/michee2/td_devops:test"
+                sh "docker push registry.gitlab.com/michee2/td_devops:test"
             }
         }
 
